@@ -23,7 +23,8 @@ class CollisionNode extends DivNode {
     }
 
     initCollision() {
-
+        this.connect('collEnter', this, this.collEnter);
+        this.connect('collLeave', this, this.collLeave);
     }
 
     loop(delta: number) {
