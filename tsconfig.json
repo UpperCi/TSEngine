@@ -5,6 +5,7 @@
         "noImplicitAny": false,
         "strictPropertyInitialization": false,
         "target": "es6",
+        "outDir": "res",
     },
     "include": [
         "./src/**/*"
