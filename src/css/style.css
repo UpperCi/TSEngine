@@ -1,0 +1,11 @@
+.gameComp {
+    position: absolute;
+}
+
+.red {
+    background-color: red;
+}
+
+.blue {
+    background-color: blue !important;
+}
