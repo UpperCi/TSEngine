@@ -1,4 +1,4 @@
-import { Vector } from "../vector";
+import { Vector } from "../vector.js";
 export class CollisionRect {
     constructor(position = new Vector(0, 0), size = new Vector(0, 0)) {
         this.x = position.x;

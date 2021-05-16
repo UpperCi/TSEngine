@@ -5,6 +5,7 @@ export class BaseNode {
         this.nodeEvents = {};
         this.nodeTriggers = {};
         this.customUpdate = () => { };
+        this.customReady = () => { };
         this.delta = 0;
         this.div = document.createElement(tag);
         for (let c of classes)
@@ -46,7 +47,9 @@ export class BaseNode {
     connect(nodeEvent, origin, callback) {
         if (!(nodeEvent in this.nodeEvents))
             this.nodeEvents[nodeEvent] = [];
-        this.nodeEvents[nodeEvent].push(origin);
+        else if (this.nodeEvents[nodeEvent].indexOf(origin) == -1) {
+            this.nodeEvents[nodeEvent].push(origin);
+        }
         if (!(nodeEvent in origin.nodeTriggers))
             this.nodeTriggers[nodeEvent] = [];
         origin.nodeTriggers[nodeEvent].push(callback);
@@ -57,7 +60,8 @@ export class BaseNode {
             for (let origin of this.nodeEvents[nodeEvent]) {
                 if (nodeEvent in origin.nodeTriggers) {
                     for (let callback of origin.nodeTriggers[nodeEvent]) {
-                        callback(data);
+                        // console.log(origin.nodeTriggers)
+                        callback(origin, data);
                     }
                 }
             }

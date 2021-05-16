@@ -21,7 +21,7 @@ export class BaseNode {
     nodeTriggers: NodeTriggerCollection = {};
 
     customUpdate: (delta: number) => void = () => { };
-    customReady: () => void;
+    customReady: () => void = () => { };
 
     div: HTMLElement;
 
@@ -74,9 +74,11 @@ export class BaseNode {
     updateElement() { }
 
     // connect node-event to callback function
-    connect(nodeEvent: string, origin: BaseNode, callback: (data: Object) => void) {
+    connect(nodeEvent: string, origin: BaseNode, callback: (self: BaseNode, data: Object) => void) {
         if (!(nodeEvent in this.nodeEvents)) this.nodeEvents[nodeEvent] = [];
-        this.nodeEvents[nodeEvent].push(origin);
+        else if (this.nodeEvents[nodeEvent].indexOf(origin) == -1) {
+            this.nodeEvents[nodeEvent].push(origin);
+        }
         if (!(nodeEvent in origin.nodeTriggers)) this.nodeTriggers[nodeEvent] = [];
         origin.nodeTriggers[nodeEvent].push(callback);
     }
@@ -87,7 +89,8 @@ export class BaseNode {
             for (let origin of this.nodeEvents[nodeEvent]) {
                 if (nodeEvent in origin.nodeTriggers) {
                     for (let callback of origin.nodeTriggers[nodeEvent]) {
-                        callback(data);
+                        // console.log(origin.nodeTriggers)
+                        callback(origin, data);
                     }
                 }
             }

@@ -3,9 +3,15 @@ import { DivNode } from "./includes/graphics/DivNode.js";
 import { Vector } from "./includes/vector.js";
 import { InputManager } from "./includes/global/inputManager.js";
 import { CollisionRect } from "./includes/physics/collisionRect.js";
+import { CollisionNode } from "./includes/physics/collisionNode.js";
+
+interface CollIdCollection {
+    [collId: number] : CollisionNode
+}
 
 export class Game {
     root: BaseNode;
+    collisionNodes: CollIdCollection = {};
 
     gameDiv: HTMLElement;
 
@@ -19,6 +25,8 @@ export class Game {
     frameRate = 0;
 
     input: InputManager;
+
+    collCounter = 0;
 
     constructor(gameDiv: HTMLElement) {
         this.gameDiv = gameDiv;
@@ -35,6 +43,25 @@ export class Game {
         return el;
     }
 
+    physicsUpdate() {
+        for (let i of Object.keys(this.collisionNodes)) {
+            for (let j of Object.keys(this.collisionNodes)) {
+                if (j != i) {
+                    let origin = this.collisionNodes[i];
+                    let alien = this.collisionNodes[j];
+                    if (j in origin.colliders) {
+                        if (!origin.collidingWith(alien)) {
+                            origin.trigger('collLeave', {'collId': j});
+                        }
+                    }
+                    else if (origin.collidingWith(alien)) {
+                        origin.trigger('collEnter', {'collId': j});
+                    }
+                }
+            }
+        }
+    }
+
     update(ms: number) {
         this.delta = (ms - this.deltaTimestamp) / 1000 * 60;
         this.deltaTimestamp = ms;
@@ -49,6 +76,7 @@ export class Game {
         }
 
         this.root.loop(this.delta);
+        this.physicsUpdate();
         this.render();
         this.input.update();
 
@@ -72,7 +100,18 @@ export class Game {
     }
 
     start() {
+        this.root.start();
         window.requestAnimationFrame((ms) => this.update(ms));
+    }
+
+    addColl(coll: CollisionNode) {
+        coll.collId = this.collCounter;
+        this.collCounter++;
+        this.collisionNodes[coll.collId] = coll;
+    }
+
+    getColl(collId: number) {
+        return this.collisionNodes[collId];
     }
 
     set rootNode(root: BaseNode) {
@@ -94,8 +133,28 @@ let coolUpdate = function () {
     this.move(direction);
 }
 
-let playerRect = new DivNode(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
+let collEnterBlue = function(self: BaseNode, data: Object) {
+    self.div.classList.add('blue');
+}
+
+let collLeaveBlue = function(self: BaseNode, data: Object) {
+    self.div.classList.remove('blue');
+}
+
+let playerRect = new CollisionNode(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
 playerRect.update = coolUpdate;
-main.rootNode = playerRect;
+playerRect.onCollEnter = collEnterBlue;
+playerRect.onCollLeave = collLeaveBlue;
+let differentRect = new CollisionNode(new Vector(500, 400), new Vector(150, 150), 'div', ['red']);
+differentRect.onCollEnter = collEnterBlue;
+differentRect.onCollLeave = collLeaveBlue;
+
+let basicRoot = new BaseNode();
+
+basicRoot.addChild(playerRect);
+basicRoot.addChild(differentRect);
+
+main.rootNode = basicRoot;
 
 main.start();
+console.log(main.collisionNodes)
