@@ -128,9 +128,10 @@ function onTouchRelease(e) {
     let touchX = (Math.abs(touchDiff.x) > Math.abs(touchDiff.y))
         ? Math.sign(touchDiff.x) : 0;
     let touchY = (Math.abs(touchDiff.x) < Math.abs(touchDiff.y)) ? Math.sign(touchDiff.y) : 0;
+    console.log(e);
     console.log(touchX, touchY);
 }
-document.addEventListener('touchstart', onTouchStart, false);
-document.addEventListener('touchend', onTouchRelease, false);
-document.addEventListener('mousedown', onTouchStart, false);
-document.addEventListener('mouseup', onTouchRelease, false);
+document.addEventListener('touchstart', (e) => { onTouchStart(e.changedTouches[0]); }, false);
+document.addEventListener('touchend', (e) => { onTouchRelease(e.changedTouches[0]); }, false);
+// document.addEventListener('mousedown', onTouchStart, false);
+// document.addEventListener('mouseup', onTouchRelease, false);
