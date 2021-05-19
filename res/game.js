@@ -67,6 +67,14 @@ export class Game {
         this.gameDiv.innerHTML = '';
         this.gameDiv.appendChild(renderDiv);
     }
+    fakeTouchEvent(e) {
+        return {
+            identifier: -1,
+            target: e.target,
+            pageX: e.pageX,
+            pageY: e.pageY
+        };
+    }
     initInput() {
         let input = new InputManager();
         document.onkeydown = function (e) { input.keyDownEvent(e.key); };
@@ -75,8 +83,10 @@ export class Game {
         document.onmouseup = function (ev) { input.keyUpEvent('mouse'); };
         this.input = input;
         let touch = new TouchManager;
-        document.addEventListener('touchstart', (e) => { touch.onTouchUp(e.changedTouches[0]); }, false);
         document.addEventListener('touchend', (e) => { touch.onTouchDown(e.changedTouches[0]); }, false);
+        document.addEventListener('touchstart', (e) => { touch.onTouchUp(e.changedTouches[0]); }, false);
+        document.addEventListener('mousedown', (e) => { touch.onTouchDown(this.fakeTouchEvent(e)); }, false);
+        document.addEventListener('mouseup', (e) => { touch.onTouchUp(this.fakeTouchEvent(e)); }, false);
         this.touch = touch;
     }
     start() {
@@ -97,29 +107,6 @@ export class Game {
     }
 }
 let main = new Game(document.querySelector('game'));
-// let coolUpdate = function () {
-//     const SPEED = 10;
-//     let direction = new Vector(
-//         (this.input.pressed('a') ? -1 : 0) + (this.input.pressed('d') ? 1 : 0),
-//         (this.input.pressed('w') ? -1 : 0) + (this.input.pressed('s') ? 1 : 0)
-//     );
-//     direction = direction.normalized();
-//     direction = direction.multiply(SPEED);
-//     this.move(direction);
-// }
-// let collEnterBlue = function(self: BaseNode, data: Object) {
-//     self.div.classList.add('blue');
-// }
-// let collLeaveBlue = function(self: BaseNode, data: Object) {
-//     self.div.classList.remove('blue');
-// }
-// let playerRect = new CollisionNode(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
-// playerRect.update = coolUpdate;
-// playerRect.onCollEnter = collEnterBlue;
-// playerRect.onCollLeave = collLeaveBlue;
-// let differentRect = new CollisionNode(new Vector(500, 400), new Vector(150, 150), 'div', ['red']);
-// differentRect.onCollEnter = collEnterBlue;
-// differentRect.onCollLeave = collLeaveBlue;
 class Player extends CollisionNode {
     constructor() {
         super(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
@@ -127,16 +114,20 @@ class Player extends CollisionNode {
     }
 }
 let coolReady = function (self) {
-    self.speed = new Vector(10, 0);
+    self.speed = new Vector(0, 0);
 };
 let coolUpdate = function (self, delta) {
     self.move(self.speed);
     self.speed = new Vector(self.speed.x * 0.8, self.speed.y * 0.8);
+    if (self.touch.justSwiped) {
+        self.speed = self.touch.lastSwipe.multiply(0.1);
+    }
 };
 let player = new Player();
 player.customReady = coolReady;
 player.customUpdate = coolUpdate;
 let basicRoot = new BaseNode();
+basicRoot.addChild(player);
 // basicRoot.addChild(playerRect);
 // basicRoot.addChild(differentRect);
 main.rootNode = basicRoot;

@@ -14,17 +14,15 @@ export class TouchManager {
     }
     onTouchUp(e) {
         let eDown = this.downEvents[`touch_${e.identifier}`];
-        console.log(Object.keys(this.downEvents));
-        console.log(`touch_${e.identifier}`);
-        console.log(eDown);
         let vDown = new Vector(eDown.pageX, eDown.pageY);
         let vUp = new Vector(e.pageX, e.pageY);
         this.lastTap = vUp;
         let touchDiff = vUp.subtract(vDown);
         if (touchDiff.length > this.swipeTreshold) {
-            let touchDir = touchDiff.normalized();
-            this.lastSwipe = touchDir;
+            this.lastSwipe = touchDiff;
+            this.justSwiped = true;
         }
+        this.justTapped = true;
         delete this.downEvents[e.identifier];
     }
     update() {

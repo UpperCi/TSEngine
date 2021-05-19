@@ -3,10 +3,6 @@ import { Vector } from "../vector.js";
 interface Touch {
     identifier:number;
     target:EventTarget;
-    screenX:number;
-    screenY:number;
-    clientX:number;
-    clientY:number;
     pageX:number;
     pageY:number;
 };
@@ -25,16 +21,13 @@ export class TouchManager {
     constructor(swipeTreshold = 10) {
         this.swipeTreshold = swipeTreshold;
     }
-
+    
     onTouchDown(e: Touch) {
         this.downEvents[`touch_${e.identifier}`] = e;
     }
 
     onTouchUp(e: Touch) {
         let eDown = this.downEvents[`touch_${e.identifier}`];
-        console.log(Object.keys(this.downEvents))
-        console.log(`touch_${e.identifier}`)
-        console.log(eDown)
         let vDown = new Vector(eDown.pageX, eDown.pageY);
         let vUp = new Vector(e.pageX, e.pageY);
 
@@ -43,10 +36,11 @@ export class TouchManager {
         let touchDiff = vUp.subtract(vDown);
 
         if (touchDiff.length > this.swipeTreshold) {
-            let touchDir = touchDiff.normalized();
-            this.lastSwipe = touchDir;
+            this.lastSwipe = touchDiff;
+            this.justSwiped = true;
         }
 
+        this.justTapped = true;
         delete this.downEvents[e.identifier];
     }
 
