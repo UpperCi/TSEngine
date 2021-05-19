@@ -1,4 +1,4 @@
-import { Vector } from "../vector";
+import { Vector } from "../vector.js";
 ;
 export class TouchManager {
     constructor(swipeTreshold = 10) {
@@ -10,10 +10,13 @@ export class TouchManager {
         this.swipeTreshold = swipeTreshold;
     }
     onTouchDown(e) {
-        this.downEvents[e.identifier] = e;
+        this.downEvents[`touch_${e.identifier}`] = e;
     }
     onTouchUp(e) {
-        let eDown = this.downEvents[e.identifier];
+        let eDown = this.downEvents[`touch_${e.identifier}`];
+        console.log(Object.keys(this.downEvents));
+        console.log(`touch_${e.identifier}`);
+        console.log(eDown);
         let vDown = new Vector(eDown.pageX, eDown.pageY);
         let vUp = new Vector(e.pageX, e.pageY);
         this.lastTap = vUp;

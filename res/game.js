@@ -1,6 +1,7 @@
 import { BaseNode } from "./includes/baseNode.js";
 import { Vector } from "./includes/vector.js";
 import { InputManager } from "./includes/global/inputManager.js";
+import { CollisionNode } from "./includes/physics/collisionNode.js";
 import { TouchManager } from "./includes/global/touchManager.js";
 export class Game {
     constructor(gameDiv) {
@@ -119,22 +120,22 @@ let main = new Game(document.querySelector('game'));
 // let differentRect = new CollisionNode(new Vector(500, 400), new Vector(150, 150), 'div', ['red']);
 // differentRect.onCollEnter = collEnterBlue;
 // differentRect.onCollLeave = collLeaveBlue;
-// class Player extends CollisionNode {
-//     speed = new Vector(0, 0);
-//     constructor() {
-//         super(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
-//     }
-// }
-// let coolReady = function(self: Player) {
-//     self.speed = new Vector(10, 0);
-// }
-// let coolUpdate = function(self: Player, delta: number) {
-//     self.move(self.speed);
-//     self.speed = new Vector(self.speed.x * 0.8, self.speed.y * 0.8);
-// }
-// let player = new Player();
-// player.customReady = coolReady;
-// player.customUpdate = coolUpdate;
+class Player extends CollisionNode {
+    constructor() {
+        super(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
+        this.speed = new Vector(0, 0);
+    }
+}
+let coolReady = function (self) {
+    self.speed = new Vector(10, 0);
+};
+let coolUpdate = function (self, delta) {
+    self.move(self.speed);
+    self.speed = new Vector(self.speed.x * 0.8, self.speed.y * 0.8);
+};
+let player = new Player();
+player.customReady = coolReady;
+player.customUpdate = coolUpdate;
 let basicRoot = new BaseNode();
 // basicRoot.addChild(playerRect);
 // basicRoot.addChild(differentRect);

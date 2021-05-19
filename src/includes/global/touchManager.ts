@@ -1,4 +1,4 @@
-import { Vector } from "../vector";
+import { Vector } from "../vector.js";
 
 interface Touch {
     identifier:number;
@@ -27,12 +27,14 @@ export class TouchManager {
     }
 
     onTouchDown(e: Touch) {
-        this.downEvents[e.identifier] = e;
+        this.downEvents[`touch_${e.identifier}`] = e;
     }
 
     onTouchUp(e: Touch) {
-        let eDown = this.downEvents[e.identifier];
-
+        let eDown = this.downEvents[`touch_${e.identifier}`];
+        console.log(Object.keys(this.downEvents))
+        console.log(`touch_${e.identifier}`)
+        console.log(eDown)
         let vDown = new Vector(eDown.pageX, eDown.pageY);
         let vUp = new Vector(e.pageX, e.pageY);
 
