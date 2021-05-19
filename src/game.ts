@@ -4,6 +4,7 @@ import { Vector } from "./includes/vector.js";
 import { InputManager } from "./includes/global/inputManager.js";
 import { CollisionRect } from "./includes/physics/collisionRect.js";
 import { CollisionNode } from "./includes/physics/collisionNode.js";
+import { TouchManager } from "./includes/global/touchManager.js";
 
 interface CollIdCollection {
     [collId: number] : CollisionNode
@@ -25,6 +26,7 @@ export class Game {
     frameRate = 0;
 
     input: InputManager;
+    touch: TouchManager;
 
     collCounter = 0;
 
@@ -79,6 +81,7 @@ export class Game {
         this.physicsUpdate();
         this.render();
         this.input.update();
+        this.touch.update();
 
         window.requestAnimationFrame((ms) => this.update(ms));
     }
@@ -97,6 +100,11 @@ export class Game {
         document.onmousedown = function (ev) { input.keyDownEvent('mouse'); };
         document.onmouseup = function (ev) { input.keyUpEvent('mouse'); };
         this.input = input;
+
+        let touch = new TouchManager;
+        document.addEventListener('touchstart', (e) => {touch.onTouchUp(e.changedTouches[0])}, false);
+        document.addEventListener('touchend', (e) => {touch.onTouchDown(e.changedTouches[0])}, false);
+        this.touch = touch;
     }
 
     start() {
@@ -141,43 +149,19 @@ let collLeaveBlue = function(self: BaseNode, data: Object) {
     self.div.classList.remove('blue');
 }
 
-// let playerRect = new CollisionNode(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
-// playerRect.update = coolUpdate;
-// playerRect.onCollEnter = collEnterBlue;
-// playerRect.onCollLeave = collLeaveBlue;
-// let differentRect = new CollisionNode(new Vector(500, 400), new Vector(150, 150), 'div', ['red']);
-// differentRect.onCollEnter = collEnterBlue;
-// differentRect.onCollLeave = collLeaveBlue;
+let playerRect = new CollisionNode(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
+playerRect.update = coolUpdate;
+playerRect.onCollEnter = collEnterBlue;
+playerRect.onCollLeave = collLeaveBlue;
+let differentRect = new CollisionNode(new Vector(500, 400), new Vector(150, 150), 'div', ['red']);
+differentRect.onCollEnter = collEnterBlue;
+differentRect.onCollLeave = collLeaveBlue;
 
-// let basicRoot = new BaseNode();
+let basicRoot = new BaseNode();
 
-// basicRoot.addChild(playerRect);
-// basicRoot.addChild(differentRect);
+basicRoot.addChild(playerRect);
+basicRoot.addChild(differentRect);
 
-// main.rootNode = basicRoot;
+main.rootNode = basicRoot;
 
-// main.start();
-
-let touchPos = new Vector(0,0);
-
-
-function onTouchStart(e: any) {
-    touchPos.x = e.pageX;
-    touchPos.y = e.pageY;
-    // console.log('start');
-}
-
-function onTouchRelease(e: any) {
-    let touchEnd = new Vector(e.pageX, e.pageY);
-    let touchDiff = touchEnd.subtract(touchPos);
-    let touchDir = touchDiff.normalized();
-    let touchX = (Math.abs(touchDiff.x) > Math.abs(touchDiff.y)) 
-    ? Math.sign(touchDiff.x) : 0;
-    let touchY = (Math.abs(touchDiff.x) < Math.abs(touchDiff.y)) ? Math.sign(touchDiff.y) : 0;
-    console.log(`Approximately: ${touchX}, ${touchY} | Exactly: ${touchDiff.x}, ${touchDiff.y}`);
-}
-
-document.addEventListener('touchstart', (e) => {onTouchStart(e.changedTouches[0])}, false);
-document.addEventListener('touchend', (e) => {onTouchRelease(e.changedTouches[0])}, false);
-// document.addEventListener('mousedown', onTouchStart, false);
-// document.addEventListener('mouseup', onTouchRelease, false);
+main.start();

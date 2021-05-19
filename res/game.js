@@ -118,7 +118,7 @@ let touchPos = new Vector(0, 0);
 function onTouchStart(e) {
     touchPos.x = e.pageX;
     touchPos.y = e.pageY;
-    // console.log('start');
+    console.log(e);
 }
 function onTouchRelease(e) {
     let touchEnd = new Vector(e.pageX, e.pageY);
@@ -128,6 +128,7 @@ function onTouchRelease(e) {
         ? Math.sign(touchDiff.x) : 0;
     let touchY = (Math.abs(touchDiff.x) < Math.abs(touchDiff.y)) ? Math.sign(touchDiff.y) : 0;
     console.log(`Approximately: ${touchX}, ${touchY} | Exactly: ${touchDiff.x}, ${touchDiff.y}`);
+    console.log(e);
 }
 document.addEventListener('touchstart', (e) => { onTouchStart(e.changedTouches[0]); }, false);
 document.addEventListener('touchend', (e) => { onTouchRelease(e.changedTouches[0]); }, false);

@@ -1,5 +1,6 @@
 import { Game } from "../game.js";
 import { InputManager } from "./global/inputManager.js";
+import { TouchManager } from "./global/touchManager.js";
 import { Vector } from "./vector.js";
 
 
@@ -14,6 +15,7 @@ interface NodeTriggerCollection {
 export class BaseNode {
     engine: Game;
     input: InputManager;
+    touch: TouchManager;
     parent: BaseNode;
     children: BaseNode[] = [];
 
@@ -109,6 +111,7 @@ export class BaseNode {
             child.game = engine;
         }
         this.input = engine.input;
+        this.touch = engine.touch;
     }
 
     // custom ready and update functions to allow for more customisable objects
