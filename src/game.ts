@@ -164,6 +164,7 @@ let touchPos = new Vector(0,0);
 function onTouchStart(e: any) {
     touchPos.x = e.pageX;
     touchPos.y = e.pageY;
+    console.log(e);
     // console.log('start');
 }
 
