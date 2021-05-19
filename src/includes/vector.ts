@@ -10,10 +10,6 @@ export class Vector {
         this.y = y;
     }
 
-    get length(): number {
-        return Math.sqrt(Math.abs(this.x) + Math.abs(this.y));
-    }
-
     distanceTo(v: Vector): number {
         let diff = new Vector(v.x - this.x, v.y - this.y);
         return diff.length;
@@ -35,5 +31,9 @@ export class Vector {
 
     multiply(n: number): Vector {
         return new Vector(this.x * n, this.y * n);
+    }
+
+    get length(): number {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 }

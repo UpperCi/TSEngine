@@ -1,7 +1,5 @@
-import { BaseNode } from "./includes/baseNode.js";
 import { Vector } from "./includes/vector.js";
 import { InputManager } from "./includes/global/inputManager.js";
-import { CollisionNode } from "./includes/physics/collisionNode.js";
 export class Game {
     constructor(gameDiv) {
         this.collisionNodes = {};
@@ -93,7 +91,7 @@ export class Game {
 let main = new Game(document.querySelector('game'));
 let coolUpdate = function () {
     const SPEED = 10;
-    let direction = new Vector(this.input.pressed('a') ? -1 : 0 + this.input.pressed('d') ? 1 : 0, this.input.pressed('w') ? -1 : 0 + this.input.pressed('s') ? 1 : 0);
+    let direction = new Vector((this.input.pressed('a') ? -1 : 0) + (this.input.pressed('d') ? 1 : 0), (this.input.pressed('w') ? -1 : 0) + (this.input.pressed('s') ? 1 : 0));
     direction = direction.normalized();
     direction = direction.multiply(SPEED);
     this.move(direction);
@@ -104,16 +102,34 @@ let collEnterBlue = function (self, data) {
 let collLeaveBlue = function (self, data) {
     self.div.classList.remove('blue');
 };
-let playerRect = new CollisionNode(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
-playerRect.update = coolUpdate;
-playerRect.onCollEnter = collEnterBlue;
-playerRect.onCollLeave = collLeaveBlue;
-let differentRect = new CollisionNode(new Vector(500, 400), new Vector(150, 150), 'div', ['red']);
-differentRect.onCollEnter = collEnterBlue;
-differentRect.onCollLeave = collLeaveBlue;
-let basicRoot = new BaseNode();
-basicRoot.addChild(playerRect);
-basicRoot.addChild(differentRect);
-main.rootNode = basicRoot;
-main.start();
-console.log(main.collisionNodes);
+// let playerRect = new CollisionNode(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
+// playerRect.update = coolUpdate;
+// playerRect.onCollEnter = collEnterBlue;
+// playerRect.onCollLeave = collLeaveBlue;
+// let differentRect = new CollisionNode(new Vector(500, 400), new Vector(150, 150), 'div', ['red']);
+// differentRect.onCollEnter = collEnterBlue;
+// differentRect.onCollLeave = collLeaveBlue;
+// let basicRoot = new BaseNode();
+// basicRoot.addChild(playerRect);
+// basicRoot.addChild(differentRect);
+// main.rootNode = basicRoot;
+// main.start();
+let touchPos = new Vector(0, 0);
+function onTouchStart(e) {
+    touchPos.x = e.pageX;
+    touchPos.y = e.pageY;
+    // console.log('start');
+}
+function onTouchRelease(e) {
+    let touchEnd = new Vector(e.pageX, e.pageY);
+    let touchDiff = touchEnd.subtract(touchPos);
+    let touchDir = touchDiff.normalized();
+    let touchX = (Math.abs(touchDiff.x) > Math.abs(touchDiff.y))
+        ? Math.sign(touchDiff.x) : 0;
+    let touchY = (Math.abs(touchDiff.x) < Math.abs(touchDiff.y)) ? Math.sign(touchDiff.y) : 0;
+    console.log(touchX, touchY);
+}
+document.addEventListener('touchstart', onTouchStart, false);
+document.addEventListener('touchend', onTouchRelease, false);
+document.addEventListener('mousedown', onTouchStart, false);
+document.addEventListener('mouseup', onTouchRelease, false);
