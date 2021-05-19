@@ -61,6 +61,7 @@ export class CollisionNode extends DivNode {
         }
         engine.addColl(this);
         this.input = engine.input;
+        this.touch = engine.touch;
     }
     set onCollEnter(callback) {
         this.connect('collEnter', this, callback);

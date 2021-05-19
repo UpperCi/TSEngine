@@ -78,6 +78,7 @@ export class BaseNode {
             child.game = engine;
         }
         this.input = engine.input;
+        this.touch = engine.touch;
     }
     // custom ready and update functions to allow for more customisable objects
     set ready(ready) {
