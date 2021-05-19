@@ -83,8 +83,8 @@ export class Game {
         document.onmouseup = function (ev) { input.keyUpEvent('mouse'); };
         this.input = input;
         let touch = new TouchManager;
-        document.addEventListener('touchend', (e) => { touch.onTouchDown(e.changedTouches[0]); }, false);
-        document.addEventListener('touchstart', (e) => { touch.onTouchUp(e.changedTouches[0]); }, false);
+        document.addEventListener('touchstart', (e) => { touch.onTouchDown(e.changedTouches[0]); }, false);
+        document.addEventListener('touchend', (e) => { touch.onTouchUp(e.changedTouches[0]); }, false);
         document.addEventListener('mousedown', (e) => { touch.onTouchDown(this.fakeTouchEvent(e)); }, false);
         document.addEventListener('mouseup', (e) => { touch.onTouchUp(this.fakeTouchEvent(e)); }, false);
         this.touch = touch;
