@@ -13,7 +13,7 @@ let coolUpdate = function (self, delta) {
     self.move(self.speed);
     self.speed = new Vector(self.speed.x * 0.85, self.speed.y * 0.85);
     if (self.touch.justSwiped) {
-        self.speed = self.touch.lastSwipe.multiply(0.1);
+        self.speed = self.touch.lastSwipe.multiply(0.15);
     }
 };
 let player = new Player();
