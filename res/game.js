@@ -1,7 +1,5 @@
-import { BaseNode } from "./includes/baseNode.js";
 import { Vector } from "./includes/vector.js";
 import { InputManager } from "./includes/global/inputManager.js";
-import { CollisionNode } from "./includes/physics/collisionNode.js";
 import { TouchManager } from "./includes/global/touchManager.js";
 export class Game {
     constructor(gameDiv) {
@@ -106,29 +104,3 @@ export class Game {
         root.game = this;
     }
 }
-let main = new Game(document.querySelector('game'));
-class Player extends CollisionNode {
-    constructor() {
-        super(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
-        this.speed = new Vector(0, 0);
-    }
-}
-let coolReady = function (self) {
-    self.speed = new Vector(0, 0);
-};
-let coolUpdate = function (self, delta) {
-    self.move(self.speed);
-    self.speed = new Vector(self.speed.x * 0.8, self.speed.y * 0.8);
-    if (self.touch.justSwiped) {
-        self.speed = self.touch.lastSwipe.multiply(0.1);
-    }
-};
-let player = new Player();
-player.customReady = coolReady;
-player.customUpdate = coolUpdate;
-let basicRoot = new BaseNode();
-basicRoot.addChild(player);
-// basicRoot.addChild(playerRect);
-// basicRoot.addChild(differentRect);
-main.rootNode = basicRoot;
-main.start();
