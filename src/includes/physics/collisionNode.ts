@@ -37,7 +37,7 @@ export class CollisionNode extends DivNode {
         }
 
         this.initCollision();
-        this.customReady();
+        this.customReady(this);
     }
 
     loop(delta: number) {
@@ -47,7 +47,7 @@ export class CollisionNode extends DivNode {
             child.loop(delta);
         }
 
-        this.customUpdate(delta);
+        this.customUpdate(this, delta);
         this.updateElement();
     }
 

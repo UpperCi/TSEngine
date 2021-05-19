@@ -3,6 +3,7 @@ import { Vector } from "../vector";
 export class TouchManager {
     constructor(swipeTreshold = 10) {
         this.downEvents = {};
+        // tells whether or not a swip/tap occured this frame
         this.justTapped = false;
         this.justSwiped = false;
         this.swipeTreshold = 10;

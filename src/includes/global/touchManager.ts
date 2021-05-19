@@ -13,10 +13,12 @@ interface Touch {
 
 export class TouchManager {
     downEvents = {};
+    // saves Vector indicating dir of last swipe and pos of last tap
     lastTap: Vector;
     lastSwipe: Vector;
-    justTapped = false;
-    justSwiped = false;
+    // tells whether or not a swip/tap occured this frame
+    justTapped: boolean = false;
+    justSwiped: boolean = false;
 
     swipeTreshold = 10;
 

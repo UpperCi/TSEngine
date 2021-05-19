@@ -1,7 +1,6 @@
 import { BaseNode } from "./includes/baseNode.js";
 import { Vector } from "./includes/vector.js";
 import { InputManager } from "./includes/global/inputManager.js";
-import { CollisionNode } from "./includes/physics/collisionNode.js";
 import { TouchManager } from "./includes/global/touchManager.js";
 export class Game {
     constructor(gameDiv) {
@@ -97,28 +96,47 @@ export class Game {
     }
 }
 let main = new Game(document.querySelector('game'));
-let coolUpdate = function () {
-    const SPEED = 10;
-    let direction = new Vector((this.input.pressed('a') ? -1 : 0) + (this.input.pressed('d') ? 1 : 0), (this.input.pressed('w') ? -1 : 0) + (this.input.pressed('s') ? 1 : 0));
-    direction = direction.normalized();
-    direction = direction.multiply(SPEED);
-    this.move(direction);
-};
-let collEnterBlue = function (self, data) {
-    self.div.classList.add('blue');
-};
-let collLeaveBlue = function (self, data) {
-    self.div.classList.remove('blue');
-};
-let playerRect = new CollisionNode(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
-playerRect.update = coolUpdate;
-playerRect.onCollEnter = collEnterBlue;
-playerRect.onCollLeave = collLeaveBlue;
-let differentRect = new CollisionNode(new Vector(500, 400), new Vector(150, 150), 'div', ['red']);
-differentRect.onCollEnter = collEnterBlue;
-differentRect.onCollLeave = collLeaveBlue;
+// let coolUpdate = function () {
+//     const SPEED = 10;
+//     let direction = new Vector(
+//         (this.input.pressed('a') ? -1 : 0) + (this.input.pressed('d') ? 1 : 0),
+//         (this.input.pressed('w') ? -1 : 0) + (this.input.pressed('s') ? 1 : 0)
+//     );
+//     direction = direction.normalized();
+//     direction = direction.multiply(SPEED);
+//     this.move(direction);
+// }
+// let collEnterBlue = function(self: BaseNode, data: Object) {
+//     self.div.classList.add('blue');
+// }
+// let collLeaveBlue = function(self: BaseNode, data: Object) {
+//     self.div.classList.remove('blue');
+// }
+// let playerRect = new CollisionNode(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
+// playerRect.update = coolUpdate;
+// playerRect.onCollEnter = collEnterBlue;
+// playerRect.onCollLeave = collLeaveBlue;
+// let differentRect = new CollisionNode(new Vector(500, 400), new Vector(150, 150), 'div', ['red']);
+// differentRect.onCollEnter = collEnterBlue;
+// differentRect.onCollLeave = collLeaveBlue;
+// class Player extends CollisionNode {
+//     speed = new Vector(0, 0);
+//     constructor() {
+//         super(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
+//     }
+// }
+// let coolReady = function(self: Player) {
+//     self.speed = new Vector(10, 0);
+// }
+// let coolUpdate = function(self: Player, delta: number) {
+//     self.move(self.speed);
+//     self.speed = new Vector(self.speed.x * 0.8, self.speed.y * 0.8);
+// }
+// let player = new Player();
+// player.customReady = coolReady;
+// player.customUpdate = coolUpdate;
 let basicRoot = new BaseNode();
-basicRoot.addChild(playerRect);
-basicRoot.addChild(differentRect);
+// basicRoot.addChild(playerRect);
+// basicRoot.addChild(differentRect);
 main.rootNode = basicRoot;
 main.start();

@@ -27,14 +27,14 @@ export class CollisionNode extends DivNode {
             child.start();
         }
         this.initCollision();
-        this.customReady();
+        this.customReady(this);
     }
     loop(delta) {
         this.delta = delta;
         for (let child of this.children) {
             child.loop(delta);
         }
-        this.customUpdate(delta);
+        this.customUpdate(this, delta);
         this.updateElement();
     }
     updateRect() {

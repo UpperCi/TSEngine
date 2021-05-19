@@ -22,10 +22,12 @@ export class BaseNode {
     nodeEvents: NodeEventCollection = {};
     nodeTriggers: NodeTriggerCollection = {};
 
-    customUpdate: (delta: number) => void = () => { };
-    customReady: () => void = () => { };
+    customUpdate: (self: BaseNode, delta: number) => void = () => { };
+    customReady: (self: BaseNode) => void = () => { };
 
     div: HTMLElement;
+
+    data: Object = {};
 
     delta = 0;
 
@@ -48,7 +50,7 @@ export class BaseNode {
             child.start();
         }
 
-        this.customReady();
+        this.customReady(this);
     }
 
     // calls loop of children before actually updating
@@ -59,7 +61,7 @@ export class BaseNode {
             child.loop(delta);
         }
 
-        this.customUpdate(delta);
+        this.customUpdate(this, delta);
         this.updateElement();
     }
 
@@ -119,7 +121,7 @@ export class BaseNode {
         this.customReady = ready;
     }
 
-    set update(update: (delta: number) => void) {
+    set update(update: (self: BaseNode, delta: number) => void) {
         this.customUpdate = update;
     }
 }

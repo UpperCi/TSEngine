@@ -6,6 +6,7 @@ export class BaseNode {
         this.nodeTriggers = {};
         this.customUpdate = () => { };
         this.customReady = () => { };
+        this.data = {};
         this.delta = 0;
         this.div = document.createElement(tag);
         for (let c of classes)
@@ -23,7 +24,7 @@ export class BaseNode {
         for (let child of this.children) {
             child.start();
         }
-        this.customReady();
+        this.customReady(this);
     }
     // calls loop of children before actually updating
     loop(delta) {
@@ -31,7 +32,7 @@ export class BaseNode {
         for (let child of this.children) {
             child.loop(delta);
         }
-        this.customUpdate(delta);
+        this.customUpdate(this, delta);
         this.updateElement();
     }
     // adds relevant children to HTMLElement
