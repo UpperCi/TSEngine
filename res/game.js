@@ -4,7 +4,7 @@ import { TouchManager } from "./includes/global/touchManager.js";
 export class Game {
     constructor(gameDiv) {
         this.collisionNodes = {};
-        this.pxMult = new Vector(1, 1);
+        this.pxMult = new Vector(0.5, 0.5);
         this.delta = 0;
         this.deltaTimestamp = 0;
         this.frameCounter = 0;
@@ -85,6 +85,7 @@ export class Game {
         document.addEventListener('touchend', (e) => { touch.onTouchUp(e.changedTouches[0]); }, false);
         document.addEventListener('mousedown', (e) => { touch.onTouchDown(this.fakeTouchEvent(e)); }, false);
         document.addEventListener('mouseup', (e) => { touch.onTouchUp(this.fakeTouchEvent(e)); }, false);
+        touch.engine = this;
         this.touch = touch;
     }
     start() {

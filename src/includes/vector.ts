@@ -29,8 +29,13 @@ export class Vector {
         return new Vector(this.x - v.x, this.y - v.y);
     }
 
-    multiply(n: number): Vector {
-        return new Vector(this.x * n, this.y * n);
+    multiply(n: number | Vector): Vector {
+        if (typeof(n) == 'number') return new Vector(this.x * n, this.y * n);
+        else return new Vector(this.x * n.x, this.y * n.y);
+    }
+
+    pow(n: number) {
+        return new Vector(this.x ** n, this.y ** n);
     }
 
     get length(): number {

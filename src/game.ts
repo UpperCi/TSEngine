@@ -1,8 +1,6 @@
 import { BaseNode } from "./includes/baseNode.js";
-import { DivNode } from "./includes/graphics/DivNode.js";
 import { Vector } from "./includes/vector.js";
 import { InputManager } from "./includes/global/inputManager.js";
-import { CollisionRect } from "./includes/physics/collisionRect.js";
 import { CollisionNode } from "./includes/physics/collisionNode.js";
 import { TouchManager } from "./includes/global/touchManager.js";
 
@@ -16,7 +14,7 @@ export class Game {
 
     gameDiv: HTMLElement;
 
-    pxMult = new Vector(1, 1);
+    pxMult = new Vector(0.5, 0.5);
 
     delta = 0;
     deltaTimestamp = 0
@@ -115,6 +113,7 @@ export class Game {
         document.addEventListener('touchend', (e) => { touch.onTouchUp(e.changedTouches[0]) }, false);
         document.addEventListener('mousedown', (e) => { touch.onTouchDown(this.fakeTouchEvent(e)) }, false);
         document.addEventListener('mouseup', (e) => { touch.onTouchUp(this.fakeTouchEvent(e)) }, false);
+        touch.engine = this;
         this.touch = touch;
     }
 

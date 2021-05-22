@@ -27,7 +27,13 @@ export class Vector {
         return new Vector(this.x - v.x, this.y - v.y);
     }
     multiply(n) {
-        return new Vector(this.x * n, this.y * n);
+        if (typeof (n) == 'number')
+            return new Vector(this.x * n, this.y * n);
+        else
+            return new Vector(this.x * n.x, this.y * n.y);
+    }
+    pow(n) {
+        return new Vector(Math.pow(this.x, n), Math.pow(this.y, n));
     }
     get length() {
         return Math.sqrt(this.x * this.x + this.y * this.y);

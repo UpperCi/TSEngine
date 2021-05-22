@@ -1,5 +1,6 @@
 import { Vector } from "../vector.js";
 ;
+;
 export class TouchManager {
     constructor(swipeTreshold = 10) {
         this.downEvents = {};
@@ -19,7 +20,7 @@ export class TouchManager {
         this.lastTap = vUp;
         let touchDiff = vUp.subtract(vDown);
         if (touchDiff.length > this.swipeTreshold) {
-            this.lastSwipe = touchDiff;
+            this.lastSwipe = touchDiff.multiply(this.engine.pxMult.pow(-1));
             this.justSwiped = true;
         }
         this.justTapped = true;

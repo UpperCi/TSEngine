@@ -24,6 +24,9 @@ let coolUpdate = function (self: Player, delta: number) {
 let player = new Player();
 player.customUpdate = coolUpdate;
 
+let test = new DivNode(new Vector(20, 20), new Vector(50, 50), 'div', ['red']);
+player.addChild(test);
+
 let basicRoot = new BaseNode();
 basicRoot.addChild(player);
 

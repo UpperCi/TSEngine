@@ -1,3 +1,4 @@
+import { Game } from "../../game.js";
 import { Vector } from "../vector.js";
 
 interface Touch {
@@ -5,6 +6,12 @@ interface Touch {
     target:EventTarget;
     pageX:number;
     pageY:number;
+};
+
+interface TouchList {
+    length:number;
+    item (index:number):Touch;
+    identifiedTouch(identifier:number):Touch;
 };
 
 export class TouchManager {
@@ -17,6 +24,8 @@ export class TouchManager {
     justSwiped: boolean = false;
 
     swipeTreshold = 10;
+
+    engine: Game;
 
     constructor(swipeTreshold = 10) {
         this.swipeTreshold = swipeTreshold;
@@ -36,7 +45,7 @@ export class TouchManager {
         let touchDiff = vUp.subtract(vDown);
 
         if (touchDiff.length > this.swipeTreshold) {
-            this.lastSwipe = touchDiff;
+            this.lastSwipe = touchDiff.multiply(this.engine.pxMult.pow(-1));
             this.justSwiped = true;
         }
 
