@@ -14,9 +14,7 @@ export class TouchManager extends NodeEventGenerator {
         this.swipeTreshold = swipeTreshold;
     }
     onTouchEventDown(e) {
-        for (let t of e.changedTouches) {
-            this.onTouchDown(t);
-        }
+        this.onTouchDown(e.changedTouches[0]);
     }
     // only triggers if no other touch is currently active
     onTouchDown(e) {

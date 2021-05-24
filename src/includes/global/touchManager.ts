@@ -33,9 +33,7 @@ export class TouchManager extends NodeEventGenerator{
     }
     
     onTouchEventDown(e: TouchEvent) {
-        for (let t of e.changedTouches) {
-            this.onTouchDown(t);
-        }
+        this.onTouchDown(e.changedTouches[0]);
     }
 
     // only triggers if no other touch is currently active
