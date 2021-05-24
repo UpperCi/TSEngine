@@ -11,12 +11,14 @@ export class InputManager extends NodeEventGenerator{
     keyDownEvent(e: String) {
         this.pressedKeys.push(e);
         this.justPressedKeys.push(e);
+        this.trigger('keydown', {'keyname': e});
     }
 
     keyUpEvent(e: String) {
         this.pressedKeys = this.pressedKeys.filter(function (value, index, arr) {
             return value !== e;
         });
+        this.trigger('keyup', {'keyname': e});
     }
 
     update() {

@@ -52,6 +52,7 @@ export class BaseNode extends NodeEventGenerator{
             child.loop(delta);
         }
 
+        this.trigger('loop');
         this.customUpdate(this, delta);
         this.updateElement();
     }
