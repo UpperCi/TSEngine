@@ -109,7 +109,7 @@ export class Game {
         this.input = input;
 
         let touch = new TouchManager;
-        document.addEventListener('touchstart', (e) => { touch.onTouchEventDown(e) }, false);
+        document.addEventListener('touchstart', (e) => { touch.onTouchDown(e.changedTouches[0]) }, false);
         document.addEventListener('touchend', (e) => { touch.onTouchEventUp(e) }, false);
         document.addEventListener('touchmove', (e) => { touch.onTouchEventMove(e) }, false);
         document.addEventListener('mousedown', (e) => { touch.onTouchDown(this.fakeTouchEvent(e)) }, false);

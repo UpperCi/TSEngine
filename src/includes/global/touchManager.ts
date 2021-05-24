@@ -30,11 +30,6 @@ export class TouchManager extends NodeEventGenerator{
         super();
         this.swipeTreshold = swipeTreshold;
     }
-
-    // handles a bunch of touches at the same time
-    onTouchEventDown(e: TouchEvent) {
-        this.onTouchDown(e.changedTouches[0]);
-    }
     
     // only triggers if no other touch is currently active
     onTouchDown(e: Touch) {
@@ -74,7 +69,7 @@ export class TouchManager extends NodeEventGenerator{
 
     onTouchEventMove(e: TouchEvent) {
         for (let t of e.changedTouches) {
-            if (t.identifier === this.trackId) {
+            if (t.identifier == this.trackId) {
                 this.onTouchMove(t);
             }
         }
