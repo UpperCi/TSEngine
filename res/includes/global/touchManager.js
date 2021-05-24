@@ -9,14 +9,16 @@ export class TouchManager extends NodeEventGenerator {
         this.justSwiped = false;
         this.justMoved = false;
         this.trackId = 0;
+        this.activeTracking = false;
         this.swipeTreshold = 10;
         this.swipeTreshold = swipeTreshold;
     }
     // only triggers if no other touch is currently active
     onTouchDown(e) {
-        if (this.trackId === 0) {
+        if (!this.activeTracking) {
             this.downEvent = e;
             this.trackId = e.identifier;
+            this.activeTracking = true;
             this.trigger('touchDown', { 'touchEvent': e });
         }
     }
@@ -38,7 +40,7 @@ export class TouchManager extends NodeEventGenerator {
             this.justSwiped = true;
         }
         this.justTapped = true;
-        this.trackId = 0;
+        this.activeTracking = false;
         this.trigger('touchUp', { 'touchEvent': e });
     }
     onTouchEventMove(e) {
@@ -50,7 +52,7 @@ export class TouchManager extends NodeEventGenerator {
     }
     // tracks any form of movement from the tracked touch
     onTouchMove(e) {
-        if (this.trackId != 0) {
+        if (this.activeTracking) {
             this.lastMove = new Vector(e.pageX, e.pageY).multiply(this.engine.pxMult.pow(-1));
             this.trigger('touchMove', { 'touchEvent': e });
         }
