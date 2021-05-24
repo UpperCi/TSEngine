@@ -1,26 +1,15 @@
 import { Game } from "../game.js";
 import { InputManager } from "./global/inputManager.js";
+import { NodeEventGenerator } from "./global/nodeEventGenerator.js";
 import { TouchManager } from "./global/touchManager.js";
 import { Vector } from "./vector.js";
 
-
-interface NodeEventCollection {
-    [eventName: string] : BaseNode[]
-}
-
-interface NodeTriggerCollection {
-    [eventName: string] : Function[]
-}
-
-export class BaseNode {
+export class BaseNode extends NodeEventGenerator{
     engine: Game;
     input: InputManager;
     touch: TouchManager;
     parent: BaseNode;
     children: BaseNode[] = [];
-
-    nodeEvents: NodeEventCollection = {};
-    nodeTriggers: NodeTriggerCollection = {};
 
     customUpdate: (self: BaseNode, delta: number) => void = () => { };
     customReady: (self: BaseNode) => void = () => { };
@@ -32,6 +21,7 @@ export class BaseNode {
     delta = 0;
 
     constructor(tag = 'div', classes: string[] = []) {
+        super();
         this.div = document.createElement(tag);
         for (let c of classes) this.div.classList.add(c);
         this.div.classList.add('gameComp');
@@ -50,6 +40,7 @@ export class BaseNode {
             child.start();
         }
 
+        this.trigger('start');
         this.customReady(this);
     }
 
@@ -76,30 +67,6 @@ export class BaseNode {
 
     // called right before getting element
     updateElement() { }
-
-    // connect node-event to callback function
-    connect(nodeEvent: string, origin: BaseNode, callback: (self: BaseNode, data: Object) => void) {
-        if (!(nodeEvent in this.nodeEvents)) this.nodeEvents[nodeEvent] = [];
-        else if (this.nodeEvents[nodeEvent].indexOf(origin) == -1) {
-            this.nodeEvents[nodeEvent].push(origin);
-        }
-        if (!(nodeEvent in origin.nodeTriggers)) this.nodeTriggers[nodeEvent] = [];
-        origin.nodeTriggers[nodeEvent].push(callback);
-    }
-
-    // trigger node-event and associated callback function(s)
-    trigger(nodeEvent: string, data = {}) {
-        if (nodeEvent in this.nodeEvents) {
-            for (let origin of this.nodeEvents[nodeEvent]) {
-                if (nodeEvent in origin.nodeTriggers) {
-                    for (let callback of origin.nodeTriggers[nodeEvent]) {
-                        // console.log(origin.nodeTriggers)
-                        callback(origin, data);
-                    }
-                }
-            }
-        }
-    }
 
     // public element property, gets child elements as well
     get element() {

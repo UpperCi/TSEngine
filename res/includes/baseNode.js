@@ -1,9 +1,9 @@
+import { NodeEventGenerator } from "./global/nodeEventGenerator.js";
 import { Vector } from "./vector.js";
-export class BaseNode {
+export class BaseNode extends NodeEventGenerator {
     constructor(tag = 'div', classes = []) {
+        super();
         this.children = [];
-        this.nodeEvents = {};
-        this.nodeTriggers = {};
         this.customUpdate = () => { };
         this.customReady = () => { };
         this.data = {};
@@ -24,6 +24,7 @@ export class BaseNode {
         for (let child of this.children) {
             child.start();
         }
+        this.trigger('start');
         this.customReady(this);
     }
     // calls loop of children before actually updating
@@ -44,30 +45,6 @@ export class BaseNode {
     }
     // called right before getting element
     updateElement() { }
-    // connect node-event to callback function
-    connect(nodeEvent, origin, callback) {
-        if (!(nodeEvent in this.nodeEvents))
-            this.nodeEvents[nodeEvent] = [];
-        else if (this.nodeEvents[nodeEvent].indexOf(origin) == -1) {
-            this.nodeEvents[nodeEvent].push(origin);
-        }
-        if (!(nodeEvent in origin.nodeTriggers))
-            this.nodeTriggers[nodeEvent] = [];
-        origin.nodeTriggers[nodeEvent].push(callback);
-    }
-    // trigger node-event and associated callback function(s)
-    trigger(nodeEvent, data = {}) {
-        if (nodeEvent in this.nodeEvents) {
-            for (let origin of this.nodeEvents[nodeEvent]) {
-                if (nodeEvent in origin.nodeTriggers) {
-                    for (let callback of origin.nodeTriggers[nodeEvent]) {
-                        // console.log(origin.nodeTriggers)
-                        callback(origin, data);
-                    }
-                }
-            }
-        }
-    }
     // public element property, gets child elements as well
     get element() {
         return this.div;

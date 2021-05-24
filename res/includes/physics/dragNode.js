@@ -3,32 +3,26 @@ import { Vector } from "../vector.js";
 export class DragNode extends DivNode {
     constructor(pos, area = new Vector(50, 50), tag = 'div', classes = ['gameComp']) {
         super(pos, area, tag, classes);
-        this.beingDragged = false;
-        this.dragId = 0;
+        this.tapTarget = false;
+        this.dragPos = pos;
+        this.connect('start', this, this.initTouch);
     }
-    // document.addEventListener('touchstart', (e) => { touch.onTouchDown(e.changedTouches[0]) }, false);
-    initTouch() {
-        this.div.addEventListener('touchstart', (e) => { this.onTapDown(e.changedTouches); }, false);
-        // this.div.addEventListener('mousedown', (e) => { this.onTapDown([this.engine.fakeTouchEvent(e)]) }, false);
-        this.div.addEventListener('touchend', (e) => { this.onTapDown(e.changedTouches); }, false);
-        this.div.addEventListener('mouseup', (e) => { ([this.engine.fakeTouchEvent(e)]); }, false);
+    initTouch(self, data) {
+        // all done through events so it doesn't clutter the update function
+        self.touch.connect('touchDown', self, self.touchDownHandler);
+        self.touch.connect('touchUp', self, self.touchUpHandler);
+        self.touch.connect('touchMove', self, self.touchMoveHandler);
     }
-    onTapDown(e) {
-        for (let t of e) {
-            if (t.target == this.div) {
-                this.beingDragged = true;
-                this.dragId = t.identifier;
-                this.relPos = new Vector(t.pageX, t.pageY).subtract(this.pos);
-            }
+    touchDownHandler(self, data) {
+        let tEvent = data['touchEvent'];
+        if (tEvent.target === self.div) {
+            self.tapTarget = true;
         }
     }
-    onTapUp(e) {
-        for (let t of e) {
-            if (t.target == this.div) {
-                this.beingDragged = false;
-            }
-        }
+    touchUpHandler(self) {
+        self.tapTarget = false;
     }
-    onTapMove() {
+    touchMoveHandler(self) {
+        self.dragPos = self.touch.lastMove;
     }
 }

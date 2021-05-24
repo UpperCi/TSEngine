@@ -2,41 +2,34 @@ import { DivNode } from "../graphics/DivNode.js";
 import { Vector } from "../vector.js";
 
 export class DragNode extends DivNode {
-    beingDragged = false;
-    dragId = 0;
-    relPos: Vector;
-    // document.addEventListener('touchstart', (e) => { touch.onTouchDown(e.changedTouches[0]) }, false);
-
-    initTouch() {
-        this.div.addEventListener('touchstart', (e) => { this.onTapDown(e.changedTouches)}, false);
-        // this.div.addEventListener('mousedown', (e) => { this.onTapDown([this.engine.fakeTouchEvent(e)]) }, false);
-        this.div.addEventListener('touchend', (e) => { this.onTapDown(e.changedTouches)}, false);
-        this.div.addEventListener('mouseup', (e) => { ([this.engine.fakeTouchEvent(e)]) }, false);
-    }
-
-    onTapDown(e: TouchList) {
-        for (let t of e) {
-            if (t.target == this.div) {
-                this.beingDragged = true;
-                this.dragId = t.identifier;
-                this.relPos = new Vector(t.pageX, t.pageY).subtract(this.pos);
-            }
-        }
-    }
-
-    onTapUp(e: TouchList) {
-        for (let t of e) {
-            if (t.target == this.div) {
-                this.beingDragged = false;
-            }
-        }
-    }
-
-    onTapMove() {
-
-    }
+    tapTarget = false;
+    dragPos: Vector;
 
     constructor(pos: Vector, area = new Vector(50, 50), tag = 'div', classes: string[] = ['gameComp']) {
         super(pos, area, tag, classes);
+        this.dragPos = pos;
+        this.connect('start', this, this.initTouch);
+    }
+
+    initTouch(self: DragNode, data: Object) {
+        // all done through events so it doesn't clutter the update function
+        self.touch.connect('touchDown', self, self.touchDownHandler);
+        self.touch.connect('touchUp', self, self.touchUpHandler);
+        self.touch.connect('touchMove', self, self.touchMoveHandler);
+    }
+
+    touchDownHandler(self: DragNode, data: Object) {
+        let tEvent: Touch = data['touchEvent'];
+        if (tEvent.target === self.div) {
+            self.tapTarget = true;
+        }
+    }
+
+    touchUpHandler(self: DragNode) {
+        self.tapTarget = false;
+    }
+
+    touchMoveHandler(self: DragNode) {
+        self.dragPos = self.touch.lastMove;
     }
 }

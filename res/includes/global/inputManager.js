@@ -1,5 +1,7 @@
-export class InputManager {
+import { NodeEventGenerator } from "./nodeEventGenerator.js";
+export class InputManager extends NodeEventGenerator {
     constructor() {
+        super();
         this.pressedKeys = [];
         this.justPressedKeys = [];
     }

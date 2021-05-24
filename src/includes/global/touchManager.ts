@@ -1,5 +1,6 @@
 import { Game } from "../../game.js";
 import { Vector } from "../vector.js";
+import { NodeEventGenerator } from "./nodeEventGenerator.js";
 
 interface Touch {
     identifier:number;
@@ -8,53 +9,88 @@ interface Touch {
     pageY:number;
 };
 
-interface TouchList {
-    length:number;
-    item (index:number):Touch;
-    identifiedTouch(identifier:number):Touch;
-};
-
-export class TouchManager {
-    downEvents = {};
-    // saves Vector indicating dir of last swipe and pos of last tap
+export class TouchManager extends NodeEventGenerator{
+    downEvent: Touch;
+    // saves Vector indicating dir of last swipe, pos of last tap and pos of last move
     lastTap: Vector;
     lastSwipe: Vector;
+    lastMove: Vector;
     // tells whether or not a swip/tap occured this frame
     justTapped: boolean = false;
     justSwiped: boolean = false;
+    justMoved: boolean = false;
+
+    trackId = 0;
 
     swipeTreshold = 10;
 
     engine: Game;
 
     constructor(swipeTreshold = 10) {
+        super();
         this.swipeTreshold = swipeTreshold;
     }
+
+    // handles a bunch of touches at the same time
+    onTouchEventDown(e: TouchEvent) {
+        this.onTouchDown(e.changedTouches[0]);
+    }
     
+    // only triggers if no other touch is currently active
     onTouchDown(e: Touch) {
-        this.downEvents[`touch_${e.identifier}`] = e;
+        if (this.trackId === 0) {
+            this.downEvent = e;
+            this.trackId = e.identifier;
+            this.trigger('touchDown', {'touchEvent': e});
+        }
     }
 
-    onTouchUp(e: Touch) {
-        let eDown = this.downEvents[`touch_${e.identifier}`];
-        let vDown = new Vector(eDown.pageX, eDown.pageY);
-        let vUp = new Vector(e.pageX, e.pageY);
+    onTouchEventUp(e: TouchEvent) {
+        for (let t of e.changedTouches) {
+            if (t.identifier === this.trackId) {
+                this.onTouchUp(t);
+            }
+        }
+    }
 
-        this.lastTap = vUp;
+    // only triggers if touch has the same id as the one being kept track of
+    onTouchUp(e: Touch) {
+        let vDown = new Vector(this.downEvent.pageX, this.downEvent.pageY).multiply(this.engine.pxMult.pow(-1));
+        let vUp = new Vector(e.pageX, e.pageY).multiply(this.engine.pxMult.pow(-1));
+
+        this.lastTap = vUp.multiply(this.engine.pxMult.pow(-1));
 
         let touchDiff = vUp.subtract(vDown);
 
         if (touchDiff.length > this.swipeTreshold) {
-            this.lastSwipe = touchDiff.multiply(this.engine.pxMult.pow(-1));
+            this.lastSwipe = touchDiff;
             this.justSwiped = true;
         }
 
         this.justTapped = true;
-        delete this.downEvents[e.identifier];
+        this.trackId = 0
+        this.trigger('touchUp', {'touchEvent': e});
+    }
+
+    onTouchEventMove(e: TouchEvent) {
+        for (let t of e.changedTouches) {
+            if (t.identifier === this.trackId) {
+                this.onTouchMove(t);
+            }
+        }
+    }
+
+    // tracks any form of movement from the tracked touch
+    onTouchMove(e: Touch) {
+        if (this.trackId != 0) {
+            this.lastMove = new Vector(e.pageX, e.pageY).multiply(this.engine.pxMult.pow(-1));
+            this.trigger('touchMove', {'touchEvent': e});
+        }
     }
 
     update() {
         this.justTapped = false;
         this.justSwiped = false;
+        this.justMoved = false;
     }
 }

@@ -1,34 +1,28 @@
 import { Game } from "./game.js";
 import { BaseNode } from "./includes/baseNode.js";
 import { DivNode } from "./includes/graphics/DivNode.js";
+import { DragNode } from "./includes/physics/dragNode.js";
 import { Vector } from "./includes/vector.js";
 
 let main = new Game(document.querySelector('game'));
 
-class Player extends DivNode {
-    speed = new Vector(0, 0);
-
-    constructor() {
-        super(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
-    }
+let vertical = new DragNode(new Vector(100, 0), new Vector(50, 50), 'div', ['red']);
+vertical.customUpdate = function(self: DragNode) {
+    self.pos = new Vector(0, self.dragPos.y);
 }
-
-let coolUpdate = function (self: Player, delta: number) {
-    self.move(self.speed);
-    self.speed = new Vector(self.speed.x * 0.85, self.speed.y * 0.85);
-    if (self.touch.justSwiped) {
-        self.speed = self.touch.lastSwipe.multiply(0.15);
-    }
+let horizontal = new DragNode(new Vector(0, 100), new Vector(50, 50), 'div', ['red']);
+horizontal.customUpdate = function(self: DragNode) {
+    self.pos = new Vector(self.dragPos.x, 0);
 }
-
-let player = new Player();
-player.customUpdate = coolUpdate;
-
-let test = new DivNode(new Vector(20, 20), new Vector(50, 50), 'div', ['red']);
-player.addChild(test);
+let full = new DragNode(new Vector(100, 100), new Vector(50, 50), 'div', ['red']);
+full.customUpdate = function(self: DragNode) {
+    self.pos = self.dragPos;
+}
 
 let basicRoot = new BaseNode();
-basicRoot.addChild(player);
+basicRoot.addChild(vertical);
+basicRoot.addChild(horizontal);
+basicRoot.addChild(full);
 
 main.rootNode = basicRoot;
 
