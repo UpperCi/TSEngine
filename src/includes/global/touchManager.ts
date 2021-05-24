@@ -77,10 +77,8 @@ export class TouchManager extends NodeEventGenerator{
 
     // tracks any form of movement from the tracked touch
     onTouchMove(e: Touch) {
-        if (this.trackId != 0) {
-            this.lastMove = new Vector(e.pageX, e.pageY).multiply(this.engine.pxMult.pow(-1));
-            this.trigger('touchMove', {'touchEvent': e});
-        }
+        this.lastMove = new Vector(e.pageX, e.pageY).multiply(this.engine.pxMult.pow(-1));
+        this.trigger('touchMove', {'touchEvent': e});
     }
 
     update() {
