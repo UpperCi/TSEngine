@@ -33,6 +33,7 @@ export class TouchManager extends NodeEventGenerator{
     }
     
     onTouchEventDown(e: TouchEvent) {
+        e.preventDefault();
         this.onTouchDown(e.changedTouches[0]);
     }
 
@@ -74,6 +75,7 @@ export class TouchManager extends NodeEventGenerator{
     }
 
     onTouchEventMove(e: TouchEvent) {
+        e.preventDefault();
         for (let t of e.changedTouches) {
             if (t.identifier == this.trackId) {
                 this.onTouchMove(t);
