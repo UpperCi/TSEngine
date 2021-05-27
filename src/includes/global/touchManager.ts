@@ -10,35 +10,35 @@ interface Touch {
 };
 
 export class TouchManager extends NodeEventGenerator{
-    downEvent: Touch;
+    public downEvent: Touch;
     // saves Vector indicating dir of last swipe, pos of last tap and pos of last move
-    lastTap: Vector;
-    lastSwipe: Vector;
-    lastMove: Vector;
+    public lastTap: Vector;
+    public lastSwipe: Vector;
+    public lastMove: Vector;
     // tells whether or not a swip/tap occured this frame
-    justTapped: boolean = false;
-    justSwiped: boolean = false;
-    justMoved: boolean = false;
+    public justTapped: boolean = false;
+    public justSwiped: boolean = false;
+    public justMoved: boolean = false;
 
-    trackId = 0;
-    activeTracking = false;
+    private trackId = 0;
+    private activeTracking = false;
 
-    swipeTreshold = 10;
+    private swipeTreshold = 10;
 
-    engine: Game;
+    public engine: Game;
 
     constructor(swipeTreshold = 10) {
         super();
         this.swipeTreshold = swipeTreshold;
     }
     
-    onTouchEventDown(e: TouchEvent) {
+    public onTouchEventDown(e: TouchEvent) {
         e.preventDefault();
         this.onTouchDown(e.changedTouches[0]);
     }
 
     // only triggers if no other touch is currently active
-    onTouchDown(e: Touch) {
+    public onTouchDown(e: Touch) {
         if (!this.activeTracking) {
             this.downEvent = e;
             this.trackId = e.identifier;
@@ -47,7 +47,7 @@ export class TouchManager extends NodeEventGenerator{
         }
     }
 
-    onTouchEventUp(e: TouchEvent) {
+    public onTouchEventUp(e: TouchEvent) {
         e.preventDefault();
         for (let t of e.changedTouches) {
             if (t.identifier === this.trackId) {
@@ -57,7 +57,7 @@ export class TouchManager extends NodeEventGenerator{
     }
 
     // only triggers if touch has the same id as the one being kept track of
-    onTouchUp(e: Touch) {
+    public onTouchUp(e: Touch) {
         let vDown = new Vector(this.downEvent.pageX, this.downEvent.pageY).multiply(this.engine.pxMult.pow(-1));
         let vUp = new Vector(e.pageX, e.pageY).multiply(this.engine.pxMult.pow(-1));
 
@@ -75,7 +75,7 @@ export class TouchManager extends NodeEventGenerator{
         this.trigger('touchUp', {'touchEvent': e});
     }
 
-    onTouchEventMove(e: TouchEvent) {
+    public onTouchEventMove(e: TouchEvent) {
         e.preventDefault();
         for (let t of e.changedTouches) {
             if (t.identifier == this.trackId) {
@@ -85,14 +85,14 @@ export class TouchManager extends NodeEventGenerator{
     }
 
     // tracks any form of movement from the tracked touch
-    onTouchMove(e: Touch) {
+    public onTouchMove(e: Touch) {
         if (this.activeTracking) {
             this.lastMove = new Vector(e.pageX, e.pageY).multiply(this.engine.pxMult.pow(-1));
             this.trigger('touchMove', {'touchEvent': e});
         }
     }
 
-    update() {
+    public update() {
         this.justTapped = false;
         this.justSwiped = false;
         this.justMoved = false;

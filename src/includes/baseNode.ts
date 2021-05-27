@@ -5,20 +5,18 @@ import { TouchManager } from "./global/touchManager.js";
 import { Vector } from "./vector.js";
 
 export class BaseNode extends NodeEventGenerator{
-    engine: Game;
-    input: InputManager;
-    touch: TouchManager;
-    parent: BaseNode;
-    children: BaseNode[] = [];
+    public engine: Game;
+    public input: InputManager;
+    public touch: TouchManager;
+    public parent: BaseNode;
+    public children: BaseNode[] = [];
 
-    customUpdate: (self: BaseNode, delta: number) => void = () => { };
-    customReady: (self: BaseNode) => void = () => { };
+    protected customUpdate: (self: BaseNode, delta: number) => void = () => { };
+    protected customReady: (self: BaseNode) => void = () => { };
 
-    div: HTMLElement;
+    public div: HTMLElement;
 
-    data: Object = {};
-
-    delta = 0;
+    public delta = 0;
 
     constructor(tag = 'div', classes: string[] = []) {
         super();
@@ -27,14 +25,14 @@ export class BaseNode extends NodeEventGenerator{
         this.div.classList.add('gameComp');
     }
 
-    addChild(child: BaseNode) {
+    public addChild(child: BaseNode) {
         child.parent = this;
         this.children.push(child);
         this.refreshChildren();
     }
 
     // calls ready of children before actually updating
-    start() {
+    public start() {
         this.div = this.engine.updateEl(new Vector(0, 0), new Vector(0, 0), this.div);
         for (let child of this.children) {
             child.start();
@@ -45,7 +43,7 @@ export class BaseNode extends NodeEventGenerator{
     }
 
     // calls loop of children before actually updating
-    loop(delta: number) {
+    public loop(delta: number) {
         this.delta = delta;
 
         for (let child of this.children) {
@@ -58,7 +56,7 @@ export class BaseNode extends NodeEventGenerator{
     }
 
     // adds relevant children to HTMLElement
-    refreshChildren() {
+    private refreshChildren() {
         this.div.innerHTML = '';
 
         for (let child of this.children) {
@@ -67,15 +65,15 @@ export class BaseNode extends NodeEventGenerator{
     }
 
     // called right before getting element
-    updateElement() { }
+    protected updateElement() { }
 
     // public element property, gets child elements as well
-    get element() {
+    public get element() {
         return this.div;
     }
 
     // so you only have to define the engine for the root node
-    set game(engine: Game) {
+    public set game(engine: Game) {
         this.engine = engine;
         for (let child of this.children) {
             child.game = engine;
@@ -85,11 +83,11 @@ export class BaseNode extends NodeEventGenerator{
     }
 
     // custom ready and update functions to allow for more customisable objects
-    set ready(ready: () => void) {
+    public set ready(ready: () => void) {
         this.customReady = ready;
     }
 
-    set update(update: (self: BaseNode, delta: number) => void) {
+    public set update(update: (self: BaseNode, delta: number) => void) {
         this.customUpdate = update;
     }
 }

@@ -9,24 +9,24 @@ interface CollIdCollection {
 }
 
 export class Game {
-    root: BaseNode;
-    collisionNodes: CollIdCollection = {};
+    protected root: BaseNode;
+    protected collisionNodes: CollIdCollection = {};
 
-    gameDiv: HTMLElement;
+    public gameDiv: HTMLElement;
 
-    pxMult = new Vector(1, 1);
+    public pxMult = new Vector(1, 1);
 
-    delta = 0;
-    deltaTimestamp = 0
+    public delta = 0;
+    public deltaTimestamp = 0
 
-    frameCounter = 0;
-    frameTimer = 0;
-    frameRate = 0;
+    private frameCounter = 0;
+    private frameTimer = 0;
+    public frameRate = 0;
 
-    input: InputManager;
-    touch: TouchManager;
+    public input: InputManager;
+    public touch: TouchManager;
 
-    collCounter = 0;
+    private collCounter = 0;
 
     constructor(gameDiv: HTMLElement) {
         this.gameDiv = gameDiv;
@@ -35,7 +35,7 @@ export class Game {
     }
 
     // takes in account pxMult, making it easier to dynamically size game
-    updateEl(pos: Vector, size: Vector, el: HTMLElement) {
+    public updateEl(pos: Vector, size: Vector, el: HTMLElement) {
         el.style.left = `${pos.x * this.pxMult.x}px`;
         el.style.top = `${pos.y * this.pxMult.y}px`;
         el.style.width = `${size.x * this.pxMult.x}px`;
@@ -43,7 +43,7 @@ export class Game {
         return el;
     }
 
-    physicsUpdate() {
+    private physicsUpdate() {
         for (let i of Object.keys(this.collisionNodes)) {
             for (let j of Object.keys(this.collisionNodes)) {
                 if (j != i) {
@@ -62,7 +62,7 @@ export class Game {
         }
     }
 
-    update(ms: number) {
+    public update(ms: number) {
         this.delta = (ms - this.deltaTimestamp) / 1000 * 60;
         this.deltaTimestamp = ms;
 
@@ -85,13 +85,13 @@ export class Game {
     }
 
     // renders root node + children
-    render() {
+    private render() {
         let renderDiv = this.root.element;
         this.gameDiv.innerHTML = '';
         this.gameDiv.appendChild(renderDiv);
     }
 
-    fakeTouchEvent(e: MouseEvent) {
+    public fakeTouchEvent(e: MouseEvent) {
         return {
             identifier: -1,
             target: e.target,
@@ -100,7 +100,7 @@ export class Game {
         }
     }
 
-    initInput() {
+    private initInput() {
         let input = new InputManager();
         document.onkeydown = function (e) { input.keyDownEvent(e.key); };
         document.onkeyup = function (e) { input.keyUpEvent(e.key); };
@@ -119,22 +119,22 @@ export class Game {
         this.touch = touch;
     }
 
-    start() {
+    public start() {
         this.root.start();
         window.requestAnimationFrame((ms) => this.update(ms));
     }
 
-    addColl(coll: CollisionNode) {
+    public addColl(coll: CollisionNode) {
         coll.collId = this.collCounter;
         this.collCounter++;
         this.collisionNodes[coll.collId] = coll;
     }
 
-    getColl(collId: number) {
+    public getColl(collId: number) {
         return this.collisionNodes[collId];
     }
 
-    set rootNode(root: BaseNode) {
+    public set rootNode(root: BaseNode) {
         this.root = root;
         root.game = this;
     }

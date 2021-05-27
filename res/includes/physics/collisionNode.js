@@ -38,7 +38,7 @@ export class CollisionNode extends DivNode {
         this.updateElement();
     }
     updateRect() {
-        this.rect.position = this.position;
+        this.rect.position = this.global_position;
         this.rect.size = this.area;
     }
     updateElement() {

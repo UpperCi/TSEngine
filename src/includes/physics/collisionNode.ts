@@ -5,32 +5,32 @@ import { Vector } from "../vector.js";
 import { CollisionRect } from "./collisionRect.js";
 
 export class CollisionNode extends DivNode {
-    rect: CollisionRect;
-    masks: number[] = [0];
-    layers: number[] = [0];
-    colliders: number[] = [];
-    collId: number;
+    private rect: CollisionRect;
+    private masks: number[] = [0];
+    public layers: number[] = [0];
+    public colliders: number[] = [];
+    public collId: number;
 
     constructor(pos: Vector = new Vector(0,0), area = new Vector(50, 50), tag = 'div', classes: string[] = ['gameComp']) {
         super(pos, area, tag, classes);
         this.rect = new CollisionRect(pos, area);
     }
 
-    collEnter(self: CollisionNode, data: Object) {
+    public collEnter(self: CollisionNode, data: Object) {
         self.colliders.push(data['collId']);
     }
 
-    collLeave(self: CollisionNode, data: Object) {
+    public collLeave(self: CollisionNode, data: Object) {
         let i = self.colliders.indexOf(data['collId']);
         if (i != -1) self.colliders.splice(i, 1);
     }
 
-    initCollision() {
+    private initCollision() {
         this.connect('collEnter', this, this.collEnter);
         this.connect('collLeave', this, this.collLeave);
     }
 
-    start() {
+    public start() {
         this.div = this.engine.updateEl(new Vector(0, 0), new Vector(0, 0), this.div);
         for (let child of this.children) {
             child.start();
@@ -40,7 +40,7 @@ export class CollisionNode extends DivNode {
         this.customReady(this);
     }
 
-    loop(delta: number) {
+    public loop(delta: number) {
         this.delta = delta;
 
         for (let child of this.children) {
@@ -51,18 +51,18 @@ export class CollisionNode extends DivNode {
         this.updateElement();
     }
 
-    updateRect() {
-        this.rect.position = this.position;
+    private updateRect() {
+        this.rect.position = this.global_position;
         this.rect.size = this.area;
     }
 
-    updateElement() {
+    public updateElement() {
         this.div = this.engine.updateEl(this.position, this.area, this.div);
         this.updateRect();
     }
 
     // checks if any mask / layer combo matches up, else auto returns false
-    collidingWith(coll: CollisionNode) {
+    public collidingWith(coll: CollisionNode) {
         for (let l of coll.layers) {
             if (l in this.masks) {
                 return this.rect.collidingWith(coll.rect);
@@ -71,7 +71,7 @@ export class CollisionNode extends DivNode {
         return false;
     }
 
-    set game (engine: Game) {
+    public set game (engine: Game) {
         this.engine = engine;
         for (let child of this.children) {
             child.game = engine;
@@ -81,11 +81,11 @@ export class CollisionNode extends DivNode {
         this.touch = engine.touch;
     }
 
-    set onCollEnter(callback: (self: BaseNode, data: Object) => void) {
+    public set onCollEnter(callback: (self: BaseNode, data: Object) => void) {
         this.connect('collEnter', this, callback);
     }
 
-    set onCollLeave(callback: (self: BaseNode, data: Object) => void) {
+    public set onCollLeave(callback: (self: BaseNode, data: Object) => void) {
         this.connect('collLeave', this, callback);
     }
 }
