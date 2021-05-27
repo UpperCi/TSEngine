@@ -49,7 +49,7 @@ export class DivNode extends BaseNode {
     }
 }
 
-class ImgNode extends DivNode {
+export class ImgNode extends DivNode {
     src: String;
 
     constructor(pos: Vector, area = new Vector(50, 50), src = '', classes: string[] = ['gameComp']) {

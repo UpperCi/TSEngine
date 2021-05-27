@@ -36,7 +36,7 @@ export class DivNode extends BaseNode {
         return this.area;
     }
 }
-class ImgNode extends DivNode {
+export class ImgNode extends DivNode {
     constructor(pos, area = new Vector(50, 50), src = '', classes = ['gameComp']) {
         super(pos, area, 'img', classes);
         this.src = `assets/${src}`;

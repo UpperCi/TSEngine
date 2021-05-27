@@ -48,6 +48,7 @@ export class TouchManager extends NodeEventGenerator{
     }
 
     onTouchEventUp(e: TouchEvent) {
+        e.preventDefault();
         for (let t of e.changedTouches) {
             if (t.identifier === this.trackId) {
                 this.onTouchUp(t);
